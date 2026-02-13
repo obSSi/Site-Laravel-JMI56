@@ -48,8 +48,8 @@
                             </div>
                         @else
                             <a class="btn btn-ghost" href="{{ route('login') }}">Se connecter</a>
+                            <a class="btn btn-primary" href="#contact">Devis gratuit</a>
                         @endif
-                        <a class="btn btn-primary" href="#contact">Devis gratuit</a>
                     </div>
                 </nav>
                 <div class="nav-cta">
@@ -63,8 +63,8 @@
                         </div>
                     @else
                         <a class="btn btn-ghost" href="{{ route('login') }}">Se connecter</a>
+                        <a class="btn btn-primary" href="#contact">Devis gratuit</a>
                     @endif
-                    <a class="btn btn-primary" href="#contact">Devis gratuit</a>
                 </div>
             </div>
         </div>
@@ -79,7 +79,6 @@
                     <div class="hero-actions">
                         <a class="btn btn-primary" href="sms:+33614418099">06 14 41 80 99</a>
                         <a class="btn btn-outline" href="tel:+33297930783">02 97 93 07 83</a>
-                        <a class="btn btn-ghost" href="#contact">Contact</a>
                     </div>
                     <div class="hero-meta">
                         <div class="meta-card">
@@ -224,7 +223,7 @@
                             <h3>JK informatique</h3>
                             <p>Partenaire local pour des solutions informatiques complémentaires.</p>
                         </div>
-                        <a class="btn btn-outline" href="#contact">Nous contacter</a>
+                        <a class="btn btn-outline" href="https://www.jkinformatique.com/" target="_blank" rel="noopener">JK informatique</a>
                     </div>
                 </div>
             </section>
@@ -269,20 +268,42 @@
                             @if ($errors->any())
                                 <div class="auth-error">{{ $errors->first() }}</div>
                             @endif
-                            <div>
+                            <div class="contact-field">
                                 <label for="name">Nom</label>
                                 <input id="name" name="name" type="text" placeholder="Votre nom" value="{{ old('name') }}" required>
                             </div>
-                            <div>
+                            <div class="contact-field">
                                 <label for="phone">Téléphone</label>
                                 <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" minlength="14" maxlength="14" pattern="[0-9]{2}( [0-9]{2}){4}" placeholder="06 12 34 56 78" value="{{ old('phone') }}" required>
                             </div>
-                            <div>
+                            <div class="contact-field">
                                 <label for="message">Message</label>
                                 <textarea id="message" name="message" placeholder="Expliquez votre besoin" required>{{ old('message') }}</textarea>
                             </div>
-                            <button class="btn btn-primary" type="submit">Envoyer la demande</button>
+                            <button class="btn btn-primary contact-submit" type="submit">Envoyer la demande</button>
                         </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mentions legales -->
+            <section class="section" id="mentions-legales">
+                <div class="container" data-animate>
+                    <h2 class="section-title">Mentions légales</h2>
+                    <div class="legal-grid">
+                        <article class="card legal-card">
+                            <h3>Éditeur du site</h3>
+                            <p>JMI 56<br>78 Rue Du Val<br>56800 PLOERMEL</p>
+                            <p>Téléphone : <a href="tel:+33614418099">06 14 41 80 99</a> — <a href="tel:+33297930783">02 97 93 07 83</a></p>
+                        </article>
+                        <article class="card legal-card">
+                            <h3>Hébergement</h3>
+                            <p>À compléter (nom de l’hébergeur, adresse, téléphone).</p>
+                        </article>
+                        <article class="card legal-card">
+                            <h3>Données personnelles</h3>
+                            <p>Les informations envoyées via le formulaire sont utilisées uniquement pour répondre aux demandes. Elles sont conservées pendant 12 mois maximum puis supprimées conformément au RGPD.</p>
+                        </article>
                     </div>
                 </div>
             </section>
@@ -304,6 +325,7 @@
                         <a class="tag" href="#presentation">Présentation</a>
                         <a class="tag" href="#services">Services</a>
                         <a class="tag" href="#contact">Contact</a>
+                        <a class="tag" href="#mentions-legales">Mentions légales</a>
                     </div>
                 </div>
                 <div>

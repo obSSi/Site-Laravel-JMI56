@@ -4,6 +4,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+const GDPR_RETENTION_DAYS = 365;
+
+function purgeOldContactRequests(): void
+{
+    DB::table('contact_requests')
+        ->where('created_at', '<', now()->subDays(GDPR_RETENTION_DAYS))
+        ->delete();
+}
+
 // Page publique
 Route::get('/', function () {
     return view('welcome');
@@ -42,6 +51,8 @@ Route::get('/admin', function (Request $request) {
         return redirect()->route('login');
     }
 
+    purgeOldContactRequests();
+
     $requests = DB::table('contact_requests')
         ->where('status', 'pending')
         ->orderByDesc('created_at')
@@ -59,6 +70,8 @@ Route::get('/admin/en-cours', function (Request $request) {
     if (!$request->session()->get('is_admin')) {
         return redirect()->route('login');
     }
+
+    purgeOldContactRequests();
 
     $requests = DB::table('contact_requests')
         ->where('status', 'in_progress')
@@ -78,6 +91,8 @@ Route::get('/admin/termine', function (Request $request) {
         return redirect()->route('login');
     }
 
+    purgeOldContactRequests();
+
     $requests = DB::table('contact_requests')
         ->where('status', 'done')
         ->orderByDesc('created_at')
@@ -96,6 +111,8 @@ Route::get('/admin/recherche', function (Request $request) {
     if (!$request->session()->get('is_admin')) {
         return redirect()->route('login');
     }
+
+    purgeOldContactRequests();
 
     $query = trim((string) $request->query('q', ''));
     if ($query === '') {
@@ -124,10 +141,16 @@ Route::post('/contact', function (Request $request) {
         'message' => ['required', 'string', 'max:2000'],
     ]);
 
+    $sanitized = [
+        'name' => trim(strip_tags($validated['name'])),
+        'phone' => trim(strip_tags($validated['phone'])),
+        'message' => trim(strip_tags($validated['message'])),
+    ];
+
     DB::table('contact_requests')->insert([
-        'name' => $validated['name'],
-        'phone' => $validated['phone'],
-        'message' => $validated['message'],
+        'name' => $sanitized['name'],
+        'phone' => $sanitized['phone'],
+        'message' => $sanitized['message'],
         'status' => 'pending',
         'created_at' => now(),
         'updated_at' => now(),
