@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Mentions legales | Demo Site</title>
-        <meta name="description" content="Mentions legales du site Demo Site.">
+        <title>Mentions légales | JMI 56</title>
+        <meta name="description" content="Mentions légales du site JMI 56.">
 
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,7 +23,7 @@
         <div class="nav-shell">
             <div class="container nav">
                 <a class="logo" href="{{ route('home') }}#accueil">
-                    <img src="{{ asset('images/logo-fictif.svg') }}" alt="Logo fictif" width="140" height="48">
+                    <img src="{{ asset('images/logo-jmi56.png') }}" alt="JMI 56" width="140" height="48">
                 </a>
                 <div class="nav-cta">
                     <a class="btn btn-ghost" href="{{ route('home') }}">Retour au site</a>
@@ -33,34 +33,41 @@
 
         <main id="main" class="section">
             <div class="container legal-page">
-                <h1 class="section-title">Mentions legales</h1>
+                <h1 class="section-title">Mentions légales</h1>
 
                 <article class="card legal-doc-card">
-                    <h2>Editeur du site</h2>
-                    <p><strong>Nom / Prenom :</strong> {{ $ownerFullName }}</p>
-                    <p><strong>Email de contact :</strong> <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></p>
+                    <h2>Éditeur du site</h2>
+                    <p><strong>Nom de l'activité :</strong> {{ $ownerName }}</p>
+                    <p><strong>Adresse :</strong> {{ $ownerAddress }}</p>
+                    <p><strong>Téléphone :</strong> {{ $ownerPhonePrimary }} @if ($ownerPhoneSecondary !== '') - {{ $ownerPhoneSecondary }} @endif</p>
+                    <p><strong>Email :</strong> <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></p>
                 </article>
 
                 <article class="card legal-doc-card">
-                    <h2>Hebergeur</h2>
+                    <h2>Hébergeur</h2>
                     <p><strong>Nom :</strong> {{ $hostingProvider }}</p>
                     <p><strong>Adresse :</strong> {{ $hostingAddress }}</p>
-                    <p><strong>Telephone :</strong> {{ $hostingPhone }}</p>
+                    <p><strong>Téléphone :</strong> {{ $hostingPhone }}</p>
                 </article>
 
                 <article class="card legal-doc-card">
-                    <h2>Responsabilite</h2>
-                    <p>Le proprietaire du site s efforce de fournir des informations exactes et a jour.</p>
-                    <p>Le site peut contenir des liens externes. Le proprietaire n est pas responsable du contenu des sites tiers.</p>
-                    <p>L utilisation du site se fait sous la responsabilite de l utilisateur.</p>
+                    <h2>Propriété intellectuelle</h2>
+                    <p>Les contenus du site (textes, images, logo, charte graphique) sont protégés par le droit d'auteur.</p>
+                    <p>Toute reproduction, diffusion ou réutilisation sans autorisation préalable est interdite.</p>
+                </article>
+
+                <article class="card legal-doc-card">
+                    <h2>Responsabilité</h2>
+                    <p>Le site est mis à jour régulièrement. Malgré cela, des erreurs ou omissions peuvent exister.</p>
+                    <p>L'utilisateur reste responsable de l'usage qu'il fait des informations disponibles sur le site.</p>
                 </article>
             </div>
         </main>
 
         <footer class="footer footer-legal-links">
             <div class="container legal-links">
-                <a href="{{ route('legal.mentions') }}">Mentions legales</a>
-                <a href="{{ route('legal.privacy') }}">Politique de confidentialite</a>
+                <a href="{{ route('legal.mentions') }}">Mentions légales</a>
+                <a href="{{ route('legal.privacy') }}">Politique de confidentialité</a>
             </div>
         </footer>
     </body>

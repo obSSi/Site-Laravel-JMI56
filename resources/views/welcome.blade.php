@@ -69,6 +69,25 @@
             </div>
         </div>
 
+        <div class="privacy-popover" data-privacy-notice hidden role="dialog" aria-modal="true" aria-labelledby="privacy-popover-title">
+            <div class="privacy-popover__card">
+                <h2 id="privacy-popover-title">Informations sur les données personnelles</h2>
+                <p>
+                    Ce site collecte des données uniquement lorsqu'un client remplit le formulaire de contact.
+                    Les données demandées ne sont pas des données sensibles.
+                </p>
+                <ul>
+                    <li>Usage : répondre à votre demande de contact.</li>
+                    <li>Conservation : 12 mois maximum, puis suppression.</li>
+                    <li>Suppression possible sur simple demande.</li>
+                </ul>
+                <p>
+                    Consultez le détail : <a href="{{ route('legal.privacy') }}">politique de confidentialité</a>.
+                </p>
+                <button class="btn btn-primary" type="button" data-privacy-close>J'ai compris</button>
+            </div>
+        </div>
+
         <!-- Hero -->
         <header class="hero" id="accueil">
             <div class="container hero-grid">
@@ -281,6 +300,10 @@
                                 <textarea id="message" name="message" placeholder="Expliquez votre besoin" required>{{ old('message') }}</textarea>
                             </div>
                             <button class="btn btn-primary contact-submit" type="submit">Envoyer la demande</button>
+                            <p class="contact-disclaimer">
+                                Données collectées uniquement via ce formulaire (nom, téléphone, message), sans données sensibles.
+                                Suppression possible sur demande.
+                            </p>
                         </form>
                     </div>
                 </div>
@@ -325,7 +348,8 @@
                         <a class="tag" href="#presentation">Présentation</a>
                         <a class="tag" href="#services">Services</a>
                         <a class="tag" href="#contact">Contact</a>
-                        <a class="tag" href="#mentions-legales">Mentions légales</a>
+                        <a class="tag" href="{{ route('legal.mentions') }}">Mentions légales</a>
+                        <a class="tag" href="{{ route('legal.privacy') }}">Politique de confidentialité</a>
                     </div>
                 </div>
                 <div>

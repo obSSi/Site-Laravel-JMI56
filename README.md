@@ -27,6 +27,25 @@ Site moderne et responsive pour un reparateur informatique (Ploermel). Le formul
 - URL : `/login`
 - Identifiants : `admin` / `admin123`
 - Acces aux onglets : Demandes, En cours, Termine
+- Protection anti brute-force type fail2ban sur la connexion admin (blocage temporaire apres plusieurs erreurs)
+- Reglages via `.env` :
+  - `SECURITY_ADMIN_LOGIN_MAX_ATTEMPTS=5`
+  - `SECURITY_ADMIN_LOGIN_LOCKOUT_SECONDS=300`
+
+## Mentions legales et RGPD
+- Pages disponibles :
+  - `/mentions-legales`
+  - `/politique-confidentialite`
+- Pop-up d information RGPD affiche a chaque ouverture de la page d accueil.
+- Parametres legaux a completer dans `.env` :
+  - `LEGAL_OWNER_NAME`
+  - `LEGAL_OWNER_ADDRESS`
+  - `LEGAL_OWNER_PHONE_PRIMARY`
+  - `LEGAL_OWNER_PHONE_SECONDARY`
+  - `LEGAL_CONTACT_EMAIL`
+  - `LEGAL_HOSTING_PROVIDER`
+  - `LEGAL_HOSTING_ADDRESS`
+  - `LEGAL_HOSTING_PHONE`
 
 ## Carte Google Maps
 - Ajouter une cle dans `.env` : `GOOGLE_MAPS_KEY=...`

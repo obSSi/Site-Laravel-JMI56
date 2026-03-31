@@ -143,6 +143,49 @@ const initSiteUI = () => {
         handlePhoneInput();
     }
 
+    // Pop-up RGPD : une fois ferme, il reste masque pendant la navigation
+    // dans l'onglet, mais reapparait apres un rafraichissement.
+    const privacyNotice = document.querySelector('[data-privacy-notice]');
+    if (privacyNotice) {
+        const storageKey = 'jmi56_privacy_notice_seen';
+        const navigationEntry = window.performance?.getEntriesByType?.('navigation')?.[0];
+        if (navigationEntry && navigationEntry.type === 'reload') {
+            window.sessionStorage.removeItem(storageKey);
+        }
+
+        const hasSeenPrivacyNotice = window.sessionStorage.getItem(storageKey) === '1';
+
+        const closeNotice = () => {
+            privacyNotice.hidden = true;
+            document.body.classList.remove('is-modal-open');
+            window.sessionStorage.setItem(storageKey, '1');
+        };
+
+        if (!hasSeenPrivacyNotice) {
+            privacyNotice.hidden = false;
+            document.body.classList.add('is-modal-open');
+        } else {
+            privacyNotice.hidden = true;
+            document.body.classList.remove('is-modal-open');
+        }
+
+        privacyNotice.querySelectorAll('[data-privacy-close]').forEach((button) => {
+            button.addEventListener('click', closeNotice);
+        });
+
+        privacyNotice.addEventListener('click', (event) => {
+            if (event.target === privacyNotice) {
+                closeNotice();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !privacyNotice.hidden) {
+                closeNotice();
+            }
+        });
+    }
+
     // Si la carte est chargee, on initialise
     if (window.google && window.google.maps) {
         initMap();

@@ -596,6 +596,57 @@ textarea {
   font-size: 0.95rem;
 }
 
+.contact-disclaimer {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+/* Pop-up donnees personnelles */
+.privacy-popover[hidden] {
+  display: none;
+}
+
+.privacy-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(12, 9, 5, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+}
+
+.privacy-popover__card {
+  width: min(620px, 95vw);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(1.2rem, 2.6vw, 1.8rem);
+}
+
+.privacy-popover__card h2 {
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+  font-family: var(--font-title);
+  line-height: 1.15;
+}
+
+.privacy-popover__card p {
+  margin: 0.5rem 0;
+}
+
+.privacy-popover__card ul {
+  margin: 0.7rem 0;
+  padding-left: 1.1rem;
+}
+
+body.is-modal-open {
+  overflow: hidden;
+}
+
 /* Mentions legales */
 .legal-grid {
   display: grid;
@@ -611,6 +662,33 @@ textarea {
 .legal-card p {
   margin: 0.45rem 0 0;
   color: var(--ink-soft);
+}
+
+/* Pages legales */
+.legal-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.legal-doc-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+}
+
+.legal-doc-card p,
+.legal-doc-card li {
+  color: var(--ink-soft);
+}
+
+.legal-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-legal-links {
+  padding-top: 1.4rem;
+  padding-bottom: 1.8rem;
 }
 
 /* Pages connexion/admin */

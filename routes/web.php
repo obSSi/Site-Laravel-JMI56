@@ -2,21 +2,46 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
-const GDPR_RETENTION_DAYS = 365;
+if (!defined('GDPR_RETENTION_DAYS')) {
+    define('GDPR_RETENTION_DAYS', 365);
+}
 
-function purgeOldContactRequests(): void
-{
-    DB::table('contact_requests')
-        ->where('created_at', '<', now()->subDays(GDPR_RETENTION_DAYS))
-        ->delete();
+if (!function_exists('purgeOldContactRequests')) {
+    function purgeOldContactRequests(): void
+    {
+        DB::table('contact_requests')
+            ->where('created_at', '<', now()->subDays(GDPR_RETENTION_DAYS))
+            ->delete();
+    }
 }
 
 // Page publique
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/mentions-legales', function () {
+    return view('legal.mentions-legales', [
+        'ownerName' => (string) env('LEGAL_OWNER_NAME', 'JMI 56'),
+        'ownerAddress' => (string) env('LEGAL_OWNER_ADDRESS', '78 Rue du Val, 56800 Ploermel'),
+        'ownerPhonePrimary' => (string) env('LEGAL_OWNER_PHONE_PRIMARY', '06 14 41 80 99'),
+        'ownerPhoneSecondary' => (string) env('LEGAL_OWNER_PHONE_SECONDARY', '02 97 93 07 83'),
+        'contactEmail' => (string) env('LEGAL_CONTACT_EMAIL', 'contact@jmi56.fr'),
+        'hostingProvider' => (string) env('LEGAL_HOSTING_PROVIDER', 'A completer'),
+        'hostingAddress' => (string) env('LEGAL_HOSTING_ADDRESS', 'A completer'),
+        'hostingPhone' => (string) env('LEGAL_HOSTING_PHONE', 'A completer'),
+    ]);
+})->name('legal.mentions');
+
+Route::get('/politique-confidentialite', function () {
+    return view('legal.politique-confidentialite', [
+        'contactEmail' => (string) env('LEGAL_CONTACT_EMAIL', 'contact@jmi56.fr'),
+        'retentionDays' => GDPR_RETENTION_DAYS,
+    ]);
+})->name('legal.privacy');
 
 // Connexion admin
 Route::get('/login', function (Request $request) {
@@ -33,12 +58,28 @@ Route::post('/login', function (Request $request) {
         'password' => ['required', 'string'],
     ]);
 
+    // Lock by client IP so lockout remains active regardless of page navigation.
+    $throttleKey = 'admin-login|'.$request->ip();
+    $maxAttempts = max((int) config('security.admin_login.max_attempts', 5), 1);
+
+    if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
+        $seconds = RateLimiter::availableIn($throttleKey);
+
+        return back()
+            ->withErrors(['login' => "Trop de tentatives. Reessayez dans {$seconds} secondes."])
+            ->withInput();
+    }
+
     if ($credentials['username'] === 'admin' && $credentials['password'] === 'admin123') {
+        RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
         $request->session()->put('is_admin', true);
 
         return redirect()->route('home');
     }
+
+    $lockoutSeconds = max((int) config('security.admin_login.lockout_seconds', 300), 1);
+    RateLimiter::hit($throttleKey, $lockoutSeconds);
 
     return back()
         ->withErrors(['login' => 'Identifiant ou mot de passe incorrect.'])
