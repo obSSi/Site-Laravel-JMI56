@@ -1,0 +1,68 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+package "App\\Models" {
+  class User {
+    +id: bigint
+    +name: string
+    +email: string
+    +password: string
+  }
+
+  class ContactRequest {
+    +id: bigint
+    +user_id: bigint?
+    +name: string
+    +phone: string
+    +message: text
+    +status: string
+    +user()
+    +messages()
+  }
+
+  class Message {
+    +id: bigint
+    +sender_id: bigint
+    +receiver_id: bigint
+    +contact_request_id: bigint?
+    +message: text
+    +status: string
+    +sender()
+    +receiver()
+    +contactRequest()
+  }
+}
+
+class "Web Routes\n(routes/web.php)" as WebRoutes {
+  +GET /
+  +GET /mentions-legales
+  +GET /politique-confidentialite
+  +GET /login
+  +POST /login
+  +GET /admin
+  +GET /admin/en-cours
+  +GET /admin/termine
+  +GET /admin/recherche
+  +POST /contact
+  +POST /admin/requests/{id}/status
+  +DELETE /admin/requests/{id}
+  +POST /logout
+}
+
+class "RateLimiter\n(Illuminate)" as RateLimiter
+class "Session\n(is_admin)" as Session
+
+ContactRequest "0..*" --> "0..1" User : belongsTo user_id
+ContactRequest "1" o-- "0..*" Message : hasMany
+Message "0..*" --> "1" User : sender_id
+Message "0..*" --> "1" User : receiver_id
+Message "0..*" --> "0..1" ContactRequest : contact_request_id
+
+WebRoutes ..> ContactRequest : CRUD (DB::table)
+WebRoutes ..> Message : relation metier
+WebRoutes ..> RateLimiter : anti brute-force login
+WebRoutes ..> Session : controle admin
+
+@enduml

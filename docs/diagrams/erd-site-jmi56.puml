@@ -1,0 +1,65 @@
+@startuml
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+entity "users" as users {
+  *id : bigint <<PK>>
+  --
+  name : string
+  email : string <<UQ>>
+  email_verified_at : timestamp?
+  password : string
+  remember_token : string?
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "contact_requests" as contact_requests {
+  *id : bigint <<PK>>
+  --
+  user_id : bigint? <<FK>>
+  name : string
+  phone : string(20)
+  message : text
+  status : string(20)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "messages" as messages {
+  *id : bigint <<PK>>
+  --
+  sender_id : bigint <<FK>>
+  receiver_id : bigint <<FK>>
+  contact_request_id : bigint? <<FK>>
+  message : text
+  status : string(20)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "sessions" as sessions {
+  *id : string <<PK>>
+  --
+  user_id : bigint?
+  ip_address : string?
+  user_agent : text?
+  payload : longtext
+  last_activity : int
+}
+
+entity "password_reset_tokens" as prt {
+  *email : string <<PK>>
+  --
+  token : string
+  created_at : timestamp?
+}
+
+users ||--o{ contact_requests : user_id (SET NULL)
+users ||--o{ messages : sender_id
+users ||--o{ messages : receiver_id
+contact_requests ||--o{ messages : contact_request_id
+users ||--o{ sessions : user_id
+
+@enduml

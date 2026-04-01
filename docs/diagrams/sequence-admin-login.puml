@@ -1,0 +1,43 @@
+@startuml
+autonumber
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+skinparam SequenceMessageAlign center
+
+actor "Admin" as Admin
+participant "Laravel Router" as Router
+participant "Route POST /login\n(closure)" as LoginRoute
+participant "RateLimiter" as RL
+participant "Session" as Session
+database "MySQL" as DB
+
+Admin -> Router: POST /login (username, password)
+Router -> LoginRoute: executer closure
+LoginRoute -> LoginRoute: validate(username,password)
+LoginRoute -> RL: tooManyAttempts(throttleKey, maxAttempts)
+
+alt Trop de tentatives
+  RL --> LoginRoute: true + availableIn
+  LoginRoute --> Admin: redirect /login + erreur lockout
+else Tentatives disponibles
+  RL --> LoginRoute: false
+  LoginRoute -> LoginRoute: verifier credentials admin/admin123
+
+  alt Credentials invalides
+    LoginRoute -> RL: hit(throttleKey, lockoutSeconds)
+    LoginRoute --> Admin: redirect /login + erreur auth
+  else Credentials valides
+    LoginRoute -> RL: clear(throttleKey)
+    LoginRoute -> Session: regenerate()
+    LoginRoute -> Session: put(is_admin, true)
+    LoginRoute --> Admin: redirect /
+  end
+end
+
+note right of DB
+Le login admin est gere par des
+credentials statiques dans routes/web.php
+et non par la table users.
+end note
+
+@enduml
